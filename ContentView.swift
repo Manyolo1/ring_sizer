@@ -1,4 +1,3 @@
-//
 //  ContentView.swift
 //  final_ring_sizer
 //
@@ -13,11 +12,17 @@ struct RingSizeHistory: Identifiable {
 
 struct ContentView: View {
     @State private var showSettings = false
+    @State private var selectedTab = "RingSizer"
     var body: some View {
         NavigationView {
-            RingSizerView(showSettings: $showSettings)
-                .navigationBarHidden(true)
-                .navigationBarBackButtonHidden(true)
+            VStack {
+                if selectedTab == "RingSizer" {
+                    RingSizerView(showSettings: $showSettings, selectedTab: $selectedTab)
+                } else {
+                    ConverterView(selectedTab: $selectedTab)
+                }
+            }
+            .navigationBarHidden(true)
         }
     }
 }
@@ -29,7 +34,7 @@ struct HistoryView: View {
     var body: some View {
         ZStack {
             VStack {
-                Spacer() // To push content upwards
+                Spacer()
                 
                 if history.isEmpty {
                     Text("No results saved")
@@ -42,7 +47,7 @@ struct HistoryView: View {
                     }
                 }
 
-                Spacer() // Push the content to the top
+                Spacer()
             }
             .background(Color.white)
             .toolbar {
@@ -68,6 +73,8 @@ struct RingSizerView: View {
     @State private var showingResult = false
     @State private var history: [RingSizeHistory] = []
     @Binding var showSettings: Bool
+    @Binding var selectedTab: String
+
 
     var body: some View {
         VStack(spacing: 20) {
@@ -115,7 +122,7 @@ struct RingSizerView: View {
 
             Button(action: {
                 showingResult = true
-                // Save the ring size to history
+                
                 history.append(RingSizeHistory(size: ringSize))
             }) {
                 Text("Get the ring size         ")
@@ -129,7 +136,7 @@ struct RingSizerView: View {
 
             CustomSlider(ringSize: $ringSize)
 
-            BottomBarView()
+            BottomBarView(selectedTab: $selectedTab)
         }
         .alert(isPresented: $showingResult) {
             Alert(title: Text("Ring Size"), message: Text("Your estimated ring size is \(ringSize) mm"), dismissButton: .default(Text("OK")))
@@ -172,7 +179,7 @@ struct TopBarView: View {
             }
 
             Button(action: {
-                // Info action
+               
             }) {
                 Image(systemName: "info.circle")
                     .foregroundColor(.black)
@@ -246,7 +253,7 @@ struct SettingsView: View {
             Divider().background(Color.orange)
             
             Button(action: {
-                // Action for Privacy Policy
+                
             }) {
                 HStack {
                     Text("Privacy Policy")
@@ -261,7 +268,7 @@ struct SettingsView: View {
             Divider().background(Color.orange)
             
             Button(action: {
-                // Action for Terms of Use
+                
             }) {
                 HStack {
                     Text("Terms of Use")
@@ -581,18 +588,67 @@ struct CustomSlider: View {
 }
 
 struct BottomBarView: View {
+    @Binding var selectedTab: String
     @State private var showFingerSizer = false
-    
-    var body: some View {
-        Spacer()
+    @State private var showSettings = false
 
-        Spacer()
+    var body: some View {
         HStack {
             Spacer()
+
             
+            Button(action: {
+                selectedTab = "RingSizer"
+            }) {
+                VStack {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(selectedTab == "RingSizer" ? .black : .gray)
+                        .font(.system(size: 27))
+                    Text("Ring Sizer")
+                        .font(.caption)
+                        .foregroundColor(selectedTab == "RingSizer" ? .black : .gray)
+                }
+            }
+
+            Spacer()
+
+           
+            NavigationLink(destination: FingerSizerView(), isActive: $showFingerSizer) {
+                Button(action: {
+                    showFingerSizer = true
+                }) {
+                    VStack {
+                        Image(systemName: "hand.tap.fill")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 27))
+                        Text("Finger Sizer")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                }
+            }
+
+            Spacer()
+
+            // Converter Button
+            Button(action: {
+                selectedTab = "Converter"
+            }) {
+                VStack {
+                    Image(systemName: "arrow.right.arrow.left")
+                        .foregroundColor(selectedTab == "Converter" ? .black : .gray)
+                        .font(.system(size:27))
+                    Text("Converter")
+                        .font(.caption)
+                        .foregroundColor(selectedTab == "Converter" ? .black : .gray)
+                }
+            }
+
             Spacer()
         }
         .padding()
+        .background(Color.white)
+        
     }
 }
 
@@ -740,13 +796,7 @@ struct FingerSizerView: View {
                 .foregroundColor(.black)
         })
         .navigationBarItems(trailing: HStack(spacing: 15) {
-            //Button(action: {}) {
-             //   Text("3D")
-              //      .foregroundColor(.black)
-                //    .font(.custom("Times New Roman", size: 16))
-                  //  .padding(8)
-                    //.background(Circle().stroke(Color.gray, lineWidth: 1))
-            //}
+            
             Button(action: {
                 isSliderOnLeft.toggle()
             }) {
