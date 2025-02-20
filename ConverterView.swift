@@ -1,9 +1,3 @@
-//
-//  ConverterView.swift
-//  final_ring_sizer
-//
-//  Created by MANYA on 29/09/24.
-//
 
 //
 //  ConverterView.swift
@@ -163,6 +157,7 @@ import SwiftUI
         @State private var convertedSize = ""
         @State private var alertMessage = ""
         @State private var showAlert = false
+        @Binding var selectedTab: String
         
         let countryOptions = [
             DropdownOption(key: "UK", value: "UNITED KINGDOM"),
@@ -321,7 +316,7 @@ import SwiftUI
                 
             }
             
-           
+            BottomBarView(selectedTab: $selectedTab) 
         }
        
         
@@ -343,81 +338,6 @@ import SwiftUI
             default:
                 return ""
             }
-        }
-    }
-struct BottomBarView2: View {
-    @State private var showFingerSizer = false
-    @State private var showRingSizer = false
-    @State private var showSettings = false
-    
-    var body: some View {
-            HStack {
-                Spacer()
-                NavigationLink(destination: RingSizerView(showSettings: $showSettings), isActive: $showRingSizer) {
-                    Button(action: {
-                        showRingSizer = true
-                    }) {
-                        VStack {
-                            Image(systemName: "checkmark.circle")
-                                .foregroundColor(.black)
-                            Text("Ring Sizer")
-                                .font(.caption)
-                                .foregroundColor(.black)
-                        }
-                    }
-                }
-            
-            Spacer()
-            NavigationLink(destination: FingerSizerView(), isActive: $showFingerSizer) {
-                Button(action: {
-                    showFingerSizer = true
-                }){
-                    VStack {
-                        Image(systemName: "hand.tap")
-                            .foregroundColor(.black)
-                            .font(.system(size: 25))
-                        Text("Finger Sizer")
-                            .font(.caption)
-                            .foregroundColor(.black)
-                    }
-                }
-            }
-            Spacer()
-            Button(action: {
-                // Converter action
-            }){
-                VStack {
-                    Image(systemName: "arrow.right.arrow.left")
-                        .foregroundColor(.black)
-                    Text("Converter")
-                        .font(.caption)
-                        .foregroundColor(.black)
-                }
-            }
-            Spacer()
-        }
-        .padding()
-    }
-}
-
-    
-    /*struct TabBarButton: View {
-        let imageName: String
-        let text: String
-        
-        var body: some View {
-            Button(action: {}) {
-                VStack {
-                    Image(systemName: imageName)
-                    Text(text)
-                }
-            }
-        }
-    }*/
-    
-    struct ConverterView_Previews: PreviewProvider {
-        static var previews: some View {
-            ConverterView()
         }
     }
 
